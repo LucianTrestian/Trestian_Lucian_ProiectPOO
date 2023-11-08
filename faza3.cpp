@@ -262,6 +262,8 @@ class LoguriSecuritate{
             throw new exception("Index invalid");
         }
     }
+    //operator de citire
+    
 };  
 ostream& operator<<(ostream& out, LoguriSecuritate& ls){
     out << "Numele logurilor de securitate este " << LoguriSecuritate::numeLoguri << " si a inregistrat " << ls.numarLoguriInregistrate << " loguri" << ", a gasit " << ls.numarErori << " erori" << " erorile sunt ";
@@ -393,7 +395,21 @@ class Token{
     //operatori de atribuire
     friend ostream& operator<<(ostream& out, Token& t);
     //operatori de citire
-    friend istream& operator>>(istream& in, Token& t);
+    friend istream& operator>>(istream& in, Token& t){
+    cout << "Introduceti numarul de aplicatii conectate: ";
+    in >> t.aplicatiiConectate;
+    cout << "Introduceti numele aplicatiilor conectate: ";
+    if(t.numeAplicatii != NULL){
+        delete[] t.numeAplicatii;
+    }
+    t.numeAplicatii = new string[t.aplicatiiConectate];
+    for(int i = 0; i < t.aplicatiiConectate; i++){
+        in >> t.numeAplicatii[i];
+    }
+    cout << "Introduceti nivelul de securitate: ";
+    in >> t.nivelSecuritate;
+    return in;
+};
     //operatori de egalitate
     friend bool operator==(Token& t1, Token& t2);
     //operatori de indexare
@@ -416,21 +432,6 @@ ostream& operator<<(ostream& out, Token& t){
     }}
     out << endl;
     return out;
-};
-istream& operator>>(istream& in, Token& t){
-    cout << "Introduceti numarul de aplicatii conectate: ";
-    in >> t.aplicatiiConectate;
-    cout << "Introduceti numele aplicatiilor conectate: ";
-    if(t.numeAplicatii != NULL){
-        delete[] t.numeAplicatii;
-    }
-    t.numeAplicatii = new string[t.aplicatiiConectate];
-    for(int i = 0; i < t.aplicatiiConectate; i++){
-        in >> t.numeAplicatii[i];
-    }
-    cout << "Introduceti nivelul de securitate: ";
-    in >> t.nivelSecuritate;
-    return in;
 };
 bool operator==(Token& t1, Token& t2){
     if(t1.aplicatiiConectate == t2.aplicatiiConectate && t1.nivelSecuritate == t2.nivelSecuritate){
