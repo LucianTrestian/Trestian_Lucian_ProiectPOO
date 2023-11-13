@@ -250,7 +250,21 @@ class LoguriSecuritate{
     //operatori de atribuire
     friend ostream& operator<<(ostream& out, LoguriSecuritate& ls);
     //operatori de citire
-    friend istream& operator>>(istream& in, LoguriSecuritate& ls);
+    friend istream& operator>>(istream& in, LoguriSecuritate& ls){
+    cout << "Introduceti numarul de loguri inregistrate: ";
+    in >> ls.numarLoguriInregistrate;
+    cout << "Introduceti erorile: ";
+    if(ls.eEroare != NULL){
+        delete[] ls.eEroare;
+    }
+    ls.eEroare = new char[ls.numarErori];
+    for(int i = 0; i < ls.numarErori; i++){
+        in >> ls.eEroare[i];
+    }
+    cout << "Introduceti nivelul de importanta: ";
+    in << ls.nivelImportanta;
+    return in;
+};
     //operatori de egalitate
     friend bool operator==(LoguriSecuritate& ls1, LoguriSecuritate& ls2);
     //operatori de indexare
@@ -262,7 +276,6 @@ class LoguriSecuritate{
             throw new exception("Index invalid");
         }
     }
-    //operator de citire
     
 };  
 ostream& operator<<(ostream& out, LoguriSecuritate& ls){
@@ -275,21 +288,6 @@ ostream& operator<<(ostream& out, LoguriSecuritate& ls){
     }}
     out << endl;
     return out;
-};
-istream& operator>>(istream& in, LoguriSecuritate& ls){
-    cout << "Introduceti numarul de loguri inregistrate: ";
-    in >> ls.numarLoguriInregistrate;
-    cout << "Introduceti erorile: ";
-    if(ls.eEroare != NULL){
-        delete[] ls.eEroare;
-    }
-    ls.eEroare = new char[ls.numarErori];
-    for(int i = 0; i < ls.numarErori; i++){
-        in >> ls.eEroare[i];
-    }
-    cout << "Introduceti nivelul de importanta: ";
-    in >> ls.nivelImportanta;
-    return in;
 };
 bool operator==(LoguriSecuritate& ls1, LoguriSecuritate& ls2){
     if(ls1.numarLoguriInregistrate == ls2.numarLoguriInregistrate && ls1.nivelImportanta == ls2.nivelImportanta){
@@ -442,7 +440,7 @@ bool operator==(Token& t1, Token& t2){
     }
 };
 string Token::Tip = "ERC-1155";
-void main(){\
+void main(){
     //testare clasei Antivirus
     Antivirus av;
     av.afisare();
@@ -455,7 +453,20 @@ void main(){\
     av1.getNivelulamenintariGasite();
     av1.setNivelulamenintariGasite(new int[2]{3,4});
     av1.afisare();
-    
+    //testare operatori 
+    Antivirus av2;
+    cin >> av2;
+    cout << av2;
+    //operator de egalitate 
+    if(av1 == av2){
+        cout << "Av1 si Av2 sunt egale" << endl;
+    }
+    else{
+        cout << "Av1 si Av2 nu sunt egale" << endl;
+    }
+    //operatorul de indexare
+    cout << av1[0] << endl;
+
     //testare clasei LoguriSecuritate
     LoguriSecuritate ls;
     ls.afisare();
@@ -468,6 +479,19 @@ void main(){\
     ls1.getEroare();
     ls1.setEroare(new char[3]{'v','v','b'});
     ls1.afisare();
+    //testare operatori
+    LoguriSecuritate ls2;
+    cin >> ls2;
+    cout << ls2;
+    //operator de egalitate
+    if(ls1 == ls2){
+        cout << "Ls1 si Ls2 sunt egale" << endl;
+    }
+    else{
+        cout << "Ls1 si Ls2 nu sunt egale" << endl;
+    }
+    //operatorul de indexare
+    cout << ls1[0] << endl;
 
     //testare clasei Token
     Token t;
@@ -481,5 +505,17 @@ void main(){\
     t1.getNumeAplicatii();
     t1.setNumeAplicatii(new string[2]{"Facebook","Facebook"});
     t1.afisare();
-
+    //testare operatori
+    Token t2;
+    cin >> t2;
+    cout << t2;
+    //operator de egalitate
+    if(t1 == t2){
+        cout << "T1 si T2 sunt egale" << endl;
+    }
+    else{
+        cout << "T1 si T2 nu sunt egale" << endl;
+    }
+    //operatorul de indexare
+    cout << t1[0] << endl;
 }
