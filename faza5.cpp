@@ -1,7 +1,6 @@
 #include <iostream>
 
 using namespace std;
-
 class Antivirus{
     private:
     static string numeAntivirus;
@@ -419,6 +418,11 @@ class Token{
             throw new exception("Index invalid");
         }
     }
+    //operatorul de incrementare
+    Token& operator++(){
+        this->nivelSecuritate++;
+        return *this;
+    }
 };
 ostream& operator<<(ostream& out, Token& t){
     out << "Tipul tokenului este " << Token::Tip << " si are ID-ul " << t.ID << " si are " << t.aplicatiiConectate << " aplicatii conectate" << " nivelul de securitate este " << t.nivelSecuritate << " aplicatiile conectate sunt ";
@@ -440,6 +444,70 @@ bool operator==(Token& t1, Token& t2){
     }
 };
 string Token::Tip = "ERC-1155";
+//clasa cu un atribut de tipul undei alte clase, relatie de has-a
+class Securitate(
+    class Antivirus av;
+    class LoguriSecuritate ls;
+    class Token t;
+    public:
+    //constructor default
+    Securitate(){
+        this->av = Antivirus();
+        this->ls = LoguriSecuritate();
+        this->t = Token();
+    }
+    //destructorii astfel încât să ștergeți memoria alocată în HEAP
+    ~Securitate(){
+        if(this->av != NULL){
+            delete[] this->av;
+        }
+        if(this->ls != NULL){
+            delete[] this->ls;
+        }
+        if(this->t != NULL){
+            delete[] this->t;
+        }
+    }
+    //constructor de copiere
+    Securitate(const Securitate& s){
+        this->av = s.av;
+        this->ls = s.ls;
+        this->t = s.t;
+    }
+    //constructor cu parametri
+    Securitate(Antivirus av, LoguriSecuritate ls, Token t){
+        this->av = av;
+        this->ls = ls;
+        this->t = t;
+    }
+    //metode de get si set pentru atributele clasei
+    Antivirus getAv(){
+        return av;
+    }
+    void setAv(Antivirus av){
+        this->av = av;
+    }
+    //operatori
+    friend ostream& operator<<(ostream& out, Securitate& s);
+    friend istream& operator>>(istream& in, Securitate& s);
+    //operatori de egalitate
+    friend bool operator==(Securitate& s1, Securitate& s2);
+    //operatori de indexare
+    Antivirus& operator[](int index){
+        if(index >= 0 && index < this->av){
+            return this->av[index];
+        }
+        else{
+            throw new exception("Index invalid");
+        }
+    }
+    ostream& operator<<(ostream& out, Securitate& s){
+    out << "Antivirusul este " << s.av << "Logurile de securitate sunt " << s.ls << "Tokenul este " << s.t << endl;
+    return out;
+};
+
+)
+
 void main(){
     //testare clasei Antivirus
     Antivirus av;
@@ -464,8 +532,15 @@ void main(){
     else{
         cout << "Av1 si Av2 nu sunt egale" << endl;
     }
-    //operatorul de indexare
-    cout << av1[0] << endl;
+    // vectori de obiecte
+    Antivirus* av3 = new Antivirus[2];
+    for(int i = 0; i < 2; i++){
+        cin >> av3[i];
+    }
+    for(int i = 0; i < 2; i++){
+        cout << av3[i];
+    }
+    
 
     //testare clasei LoguriSecuritate
     LoguriSecuritate ls;
@@ -492,6 +567,14 @@ void main(){
     }
     //operatorul de indexare
     cout << ls1[0] << endl;
+    //vectori de obiecte
+    LoguriSecuritate* ls3 = new LoguriSecuritate[2];
+    for(int i = 0; i < 2; i++){
+        cin >> ls3[i];
+    }
+    for(int i = 0; i < 2; i++){
+        cout << ls3[i];
+    }
 
     //testare clasei Token
     Token t;
@@ -518,4 +601,36 @@ void main(){
     }
     //operatorul de indexare
     cout << t1[0] << endl;
+    //vectori de obiecte
+    Token* t3 = new Token[2];
+    for(int i = 0; i < 2; i++){
+        cin >> t3[i];
+    }
+    for(int i = 0; i < 2; i++){
+        cout << t3[i];
+    }
+    //matricie de obiecte
+    Token** t4 = new Token*[2];
+    for(int i = 0; i < 2; i++){
+        t4[i] = new Token[2];
+    }
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
+            cin >> t4[i][j];
+        }
+    }
+    for(int i = 0; i < 2; i++){
+        for(int j = 0; j < 2; j++){
+            cout << t4[i][j];
+        }
+    }
+    //dezalocare matrice
+    for(int i = 0; i < 2; i++){
+        delete[] t4[i];
+    }
+    delete[] t4;
+    //dezalocare vectori
+    delete[] t3;
+    delete[] ls3;
+    delete[] av3;
 }
