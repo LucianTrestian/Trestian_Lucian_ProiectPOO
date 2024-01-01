@@ -1,5 +1,7 @@
+#include <vector>
+#include <string>
 #include <iostream>
-
+#include <istream>
 using namespace std;
 class Antivirus{
     private:
@@ -90,14 +92,10 @@ class Antivirus{
         return suma/(float) this->numarAmenintariGasite;
     }   
     //modificam numele antivirusului
-    void setNumeAntivirus(string numeAntivirus){
-        Antivirus::numeAntivirus = numeAntivirus;
-    } 
-    //parcurgem vectorul de amenintari si calculam numarul de amenintari de tipul respectiv
-    int getNivelulamenintariGasite(int nivelulamenintariGasite){
-        int numarAmenintari = 0;
-        for(int i = 0; i < this->numarAmenintariGasite; i++){
-            if(this->nivelulamenintariGasite[i] == nivelulamenintariGasite){
+    int* getNivelulamenintariGasite(int nivelulamenintariCautate){
+        int* numarAmenintari = 0;
+        for(int i = 0; i < numarAmenintariGasite; i++){
+            if(nivelulamenintariCautate == this->nivelulamenintariGasite[i]){
                 numarAmenintari++;
             }
         }
@@ -118,6 +116,7 @@ class Antivirus{
             throw new exception("Index invalid");
         }
     }
+    friend bool operator==(const Antivirus& av1, const Antivirus& av2);
 };
 ostream& operator<<(ostream& out, Antivirus& av){
     out << "Numele antivirusului este " << Antivirus::numeAntivirus << " si a efectuat " << av.numarScanariEfectuate << " scanari" << ", a gasit " << av.numarAmenintariGasite << " amenintari" << " nivelul amenintarilor este ";
@@ -249,21 +248,23 @@ class LoguriSecuritate{
     //operatori de atribuire
     friend ostream& operator<<(ostream& out, LoguriSecuritate& ls);
     //operatori de citire
+    #include <istream> // Include the necessary header file for the istream class
+
     friend istream& operator>>(istream& in, LoguriSecuritate& ls){
-    cout << "Introduceti numarul de loguri inregistrate: ";
-    in >> ls.numarLoguriInregistrate;
-    cout << "Introduceti erorile: ";
-    if(ls.eEroare != NULL){
-        delete[] ls.eEroare;
-    }
-    ls.eEroare = new char[ls.numarErori];
-    for(int i = 0; i < ls.numarErori; i++){
-        in >> ls.eEroare[i];
-    }
-    cout << "Introduceti nivelul de importanta: ";
-    in << ls.nivelImportanta;
-    return in;
-};
+        cout << "Introduceti numarul de loguri inregistrate: ";
+        in >> ls.numarLoguriInregistrate;
+        cout << "Introduceti erorile: ";
+        if(ls.eEroare != NULL){
+            delete[] ls.eEroare;
+        }
+        ls.eEroare = new char[ls.numarErori];
+        for(int i = 0; i < ls.numarErori; i++){
+            in >> ls.eEroare[i];
+        }
+        cout << "Introduceti nivelul de importanta: ";
+        in >> ls.nivelImportanta;
+        return in;
+    };
     //operatori de egalitate
     friend bool operator==(LoguriSecuritate& ls1, LoguriSecuritate& ls2);
     //operatori de indexare
@@ -275,6 +276,8 @@ class LoguriSecuritate{
             throw new exception("Index invalid");
         }
     }
+    friend bool operator==(const LoguriSecuritate& ls1, const LoguriSecuritate& ls2);
+
     
 };  
 ostream& operator<<(ostream& out, LoguriSecuritate& ls){
@@ -312,10 +315,10 @@ class Token{
         this->numeAplicatii = NULL;
     }
     //destructorii astfel încât să ștergeți memoria alocată în HEAP
-    ~Token(){
-        if(this->numeAplicatii != NULL){
-            delete[] this->numeAplicatii;
-        }
+    ~Token() {
+    if (this->numeAplicatii != NULL) {
+        delete[] this->numeAplicatii;
+    }
     }
     //constructor de copiere
     Token(const Token& t):ID(t.ID){
@@ -398,7 +401,7 @@ class Token{
     cout << "Introduceti numele aplicatiilor conectate: ";
     if(t.numeAplicatii != NULL){
         delete[] t.numeAplicatii;
-    }
+    } 
     t.numeAplicatii = new string[t.aplicatiiConectate];
     for(int i = 0; i < t.aplicatiiConectate; i++){
         in >> t.numeAplicatii[i];
@@ -444,69 +447,265 @@ bool operator==(Token& t1, Token& t2){
     }
 };
 string Token::Tip = "ERC-1155";
-//clasa cu un atribut de tipul undei alte clase, relatie de has-a
-class Securitate(
-    class Antivirus av;
-    class LoguriSecuritate ls;
-    class Token t;
+//o clasa care sa contina cel puţin un atribut de tipul unei clase din cele trei pe care le-aţi implementat deja
+
+class Proiect {
+    private:
+    string numeProiect;
+    Antivirus av;
+    LoguriSecuritate ls;
+    Token t;
     public:
     //constructor default
-    Securitate(){
-        this->av = Antivirus();
-        this->ls = LoguriSecuritate();
-        this->t = Token();
+    Proiect(){
+        this->numeProiect = "Proiect";
     }
     //destructorii astfel încât să ștergeți memoria alocată în HEAP
-    ~Securitate(){
-        if(this->av != NULL){
-            delete[] this->av;
-        }
-        if(this->ls != NULL){
-            delete[] this->ls;
-        }
-        if(this->t != NULL){
-            delete[] this->t;
-        }
+    ~Proiect(){
     }
     //constructor de copiere
-    Securitate(const Securitate& s){
-        this->av = s.av;
-        this->ls = s.ls;
-        this->t = s.t;
+    Proiect(const Proiect& p){
+        this->numeProiect = p.numeProiect;
+        this->av = p.av;
+        this->ls = p.ls;
+        this->t = p.t;
     }
     //constructor cu parametri
-    Securitate(Antivirus av, LoguriSecuritate ls, Token t){
-        this->av = av;
-        this->ls = ls;
-        this->t = t;
+    Proiect(string numeProiect, Antivirus av1, LoguriSecuritate ls1, Token t1){
+        this->numeProiect = numeProiect;
+        this->av = av1;
+        this->ls = ls1;
+        this->t = t1;
     }
     //metode de get si set pentru atributele clasei
+    string getNumeProiect(){
+        return numeProiect;
+    }
+    void setNumeProiect(string numeProiect){
+        this->numeProiect = numeProiect;
+    }
     Antivirus getAv(){
         return av;
     }
     void setAv(Antivirus av){
         this->av = av;
     }
-    //operatori
-    friend ostream& operator<<(ostream& out, Securitate& s);
-    friend istream& operator>>(istream& in, Securitate& s);
+    LoguriSecuritate getLs(){
+        return ls;
+    }
+    void setLs(LoguriSecuritate ls){
+        this->ls = ls;
+    }
+    Token getT(){
+        return t;
+    }
+    void setT(Token t){
+        this->t = t;
+    }
+    void afisare(){
+        cout << "Numele proiectului este " << this->numeProiect << endl;
+        cout << "Antivirusul este " << this->av << endl;
+        cout << "Logurile de securitate sunt " << this->ls << endl;
+        cout << "Tokenul este " << this->t << endl;
+    }
+    //operatori de atribuire
+    friend ostream& operator<<(ostream& out, Proiect& p);
+    //operatori de citire
+    friend istream& operator>>(istream& in, Proiect& p){
+    cout << "Introduceti numele proiectului: ";
+    in >> p.numeProiect;
+    cout << "Introduceti antivirusul: ";
+    in >> p.av;
+    }
     //operatori de egalitate
-    friend bool operator==(Securitate& s1, Securitate& s2);
+    friend bool operator==(Proiect& p1, Proiect& p2);
     //operatori de indexare
     Antivirus& operator[](int index){
-        if(index >= 0 && index < this->av){
-            return this->av[index];
+        if(index >= 0 && index < this->av.getNumarAmenintariGasite()){
+            return this->av;
         }
         else{
             throw new exception("Index invalid");
         }
     }
-    ostream& operator<<(ostream& out, Securitate& s){
-    out << "Antivirusul este " << s.av << "Logurile de securitate sunt " << s.ls << "Tokenul este " << s.t << endl;
+};
+ostream& operator<<(ostream& out, Proiect& p){
+    out << "Numele proiectului este " << p.numeProiect << endl;
+    out << "Antivirusul este " << p.av << endl;
+    out << "Logurile de securitate sunt " << p.ls << endl;
+    out << "Tokenul este " << p.t << endl;
     return out;
 };
-
-)
+bool operator==(Proiect& p1, Proiect& p2){
+    if(p1.numeProiect == p2.numeProiect){
+        return true;
+    }
+    else{
+        return false;
+    }
+};
+//două clase care să moștenească una, doua dintre clasele existente deja. relatia "is-a"
+class Proiect1: public Antivirus, public LoguriSecuritate{
+    private:
+    string numeProiect;
+    Antivirus av;
+    LoguriSecuritate ls;
+    Token t;
+    public:
+    //constructor default
+    Proiect1(){
+        this->numeProiect = "Proiect";
+    }
+    //destructorii astfel încât să ștergeți memoria alocată în HEAP
+    ~Proiect1(){
+    }
+    //constructor de copiere
+    Proiect1(const Proiect1& p){
+        this->numeProiect = p.numeProiect;
+        this->av = p.av;
+        this->ls = p.ls;
+        this->t = p.t;
+    }
+    //constructor cu parametri
+    Proiect1(string numeProiect, Antivirus av1, LoguriSecuritate ls1, Token t1){
+        this->numeProiect = numeProiect;
+        this->av = av1;
+        this->ls = ls1;
+        this->t = t1;
+    }
+    //metode de get si set pentru atributele clasei
+    string getNumeProiect(){
+        return numeProiect;
+    }
+    void setNumeProiect(string numeProiect){
+        this->numeProiect = numeProiect;
+    }
+    Antivirus getAv(){
+        return av;
+    }
+    void setAv(Antivirus av){
+        this->av = av;
+    }
+    LoguriSecuritate getLs(){
+        return ls;
+    }
+    void setLs(LoguriSecuritate ls){
+        this->ls = ls;
+    }
+    Token getT(){
+        return t;
+    }
+    void setT(Token t){
+        this->t = t;
+    }
+    void afisare(){
+        cout << "Numele proiectului este " << this->numeProiect << endl;
+        cout << "Antivirusul este " << this->av << endl;
+        cout << "Logurile de securitate sunt " << this->ls << endl;
+        cout << "Tokenul este " << this->t << endl;
+    }
+    //operatori de atribuire
+    friend ostream& operator<<(ostream& out, Proiect1& p);
+    //operatori de citire
+    friend istream& operator>>(istream& in, Proiect1& p){
+    cout << "Introduceti numele proiectului: ";
+    in >> p.numeProiect;
+    cout << "Introduceti antivirusul: ";
+    in >> p.av;
+    }
+    //operatori de egalitate
+    friend bool operator==(Proiect1& p1, Proiect1& p2);
+    //operatori de indexare
+    Antivirus& operator[](int index){
+        if(index >= 0 && index < this->av.getNumarAmenintariGasite()){
+            return this->av;
+        }
+        else{
+            throw new exception("Index invalid");
+        }
+    }
+};
+class Proiect2: public Antivirus, public Token{
+    private:
+    string numeProiect;
+    Antivirus av;
+    LoguriSecuritate ls;
+    Token t;
+    public:
+    //constructor default
+    Proiect2(){
+        this->numeProiect = "Proiect";
+    }
+    //destructorii astfel încât să ștergeți memoria alocată în HEAP
+    ~Proiect2(){
+    }
+    //constructor de copiere
+    Proiect2(const Proiect2& p){
+        this->numeProiect = p.numeProiect;
+        this->av = p.av;
+        this->ls = p.ls;
+        this->t = p.t;
+    }
+    //constructor cu parametri
+    Proiect2(string numeProiect, Antivirus av1, LoguriSecuritate ls1, Token t1){
+        this->numeProiect = numeProiect;
+        this->av = av1;
+        this->ls = ls1;
+        this->t = t1;
+    }
+    //metode de get si set pentru atributele clasei
+    string getNumeProiect(){
+        return numeProiect;
+    }
+    void setNumeProiect(string numeProiect){
+        this->numeProiect = numeProiect;
+    }
+    Antivirus getAv(){
+        return av;
+    }
+    void setAv(Antivirus av){
+        this->av = av;
+    }
+    LoguriSecuritate getLs(){
+        return ls;
+    }
+    void setLs(LoguriSecuritate ls){
+        this->ls = ls;
+    }
+    Token getT(){
+        return t;
+    }
+    void setT(Token t){
+        this->t = t;
+    }
+    void afisare(){
+        cout << "Numele proiectului este " << this->numeProiect << endl;
+        cout << "Antivirusul este " << this->av << endl;
+        cout << "Logurile de securitate sunt " << this->ls << endl;
+        cout << "Tokenul este " << this->t << endl;
+    }
+    //operatori de atribuire
+    friend ostream& operator<<(ostream& out, Proiect2& p);
+    //operatori de citire
+    friend istream& operator>>(istream& in, Proiect2& p){
+    cout << "Introduceti numele proiectului: ";
+    in >> p.numeProiect;
+    cout << "Introduceti antivirusul: ";
+    in >> p.av;
+    }
+    //operatori de egalitate
+    friend bool operator==(Proiect2& p1, Proiect2& p2);
+    //operatori de indexare
+    Antivirus& operator[](int index){
+        if(index >= 0 && index < this->av.getNumarAmenintariGasite()){
+            return this->av;
+        }
+        else{
+            throw new exception("Index invalid");
+        }
+    }
+};
+    
 
 void main(){
     //testare clasei Antivirus
@@ -540,8 +739,17 @@ void main(){
     for(int i = 0; i < 2; i++){
         cout << av3[i];
     }
-    
-
+    //lucru cu fisierul text
+    ofstream f("fisier.txt");
+    for(int i = 0; i < 2; i++){
+        f << av3[i];
+    }
+    f.close();
+    ifstream g("fisier.txt");
+    for(int i = 0; i < 2; i++){
+        g >> av3[i];
+    }
+    g.close();
     //testare clasei LoguriSecuritate
     LoguriSecuritate ls;
     ls.afisare();
@@ -575,7 +783,17 @@ void main(){
     for(int i = 0; i < 2; i++){
         cout << ls3[i];
     }
-
+    //lucru cu fisierul text si metode de citire si scriere
+    ofstream h("fisier.txt");
+    for(int i = 0; i < 2; i++){
+        h << ls3[i];
+    }
+    h.close();
+    ifstream k("fisier.txt");
+    for(int i = 0; i < 2; i++){
+        k >> ls3[i];
+    }
+    k.close();
     //testare clasei Token
     Token t;
     t.afisare();
@@ -633,4 +851,51 @@ void main(){
     delete[] t3;
     delete[] ls3;
     delete[] av3;
+    //lucru cu fisierul binar si metode de citire si scriere
+    ofstream l("fisier.bin", ios::binary);
+    for(int i = 0; i < 2; i++){
+        l.write((char*)&av3[i], sizeof(Antivirus));
+    }
+    l.close();
+    ifstream m("fisier.bin", ios::binary);
+    for(int i = 0; i < 2; i++){
+        m.read((char*)&av3[i], sizeof(Antivirus));
+    }
+    m.close();
+    //testare clasei Proiect
+    Proiect p;
+    p.afisare();
+    Proiect p1("Proiect 1", av1, ls1, t1);
+    p1.afisare();
+    p1.setNumeProiect("Proiect 2");
+    p1.afisare();
+    p1.setAv(av2);
+    p1.afisare();
+    p1.setLs(ls2);
+    p1.afisare();
+    p1.setT(t2);
+    p1.afisare();
+    //operatori de atribuire
+    Proiect p2;
+    cin >> p2;
+    cout << p2;
+    //operator de egalitate
+    if(p1 == p2){
+        cout << "P1 si P2 sunt egale" << endl;
+    }
+    else{
+        cout << "P1 si P2 nu sunt egale" << endl;
+    }
+    //luctu cu fisierul binar
+    ofstream n("fisier.bin", ios::binary);
+    for(int i = 0; i < 2; i++){
+        n.write((char*)&p1, sizeof(Proiect));
+    }
+    n.close();
+    ifstream o("fisier.bin", ios::binary);
+    for(int i = 0; i < 2; i++){
+        o.read((char*)&p1, sizeof(Proiect));
+    }
+    o.close();
+
 }
