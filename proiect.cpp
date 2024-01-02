@@ -18,7 +18,7 @@ public:
     virtual void afisare() const = 0;
 };
 
-class Task {
+class Task : public AbstractTask{
 private:
     string numeTask;
     int prioritate;
@@ -457,7 +457,7 @@ public:
 
 string Logger::fisierLog = "log.txt";
 
-class Server {
+class Server : public AbstractServer{
 private:
     string numeServer;
     int capacitate;
@@ -1103,7 +1103,7 @@ int main() {
     // Afisare atributele obiectelor prin intermediul referintelor la clasa de baza
     cout << "TaskSpecial prin Task&: " << taskBaseRef << endl;
     cout << "ServerSpecial prin Server&: " << serverBaseRef << endl;
-        // Exemplificare late-binding cu vector de pointeri la tipul abstract
+    // Exemplificare late-binding cu vector de pointeri la tipul abstract
 
     vector<AbstractTask*> vectorTaskuri;
 
